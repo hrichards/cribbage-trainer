@@ -294,7 +294,7 @@ def main(args):
                     print HELP_MESSAGE
                 else:
                     print INVALID_INPUT_MESSAGE
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, EOFError):
                 print GOODBYE_MESSAGE
                 repeat_flag = False
                 break
