@@ -36,56 +36,51 @@ RED_SUITS = [HEARTS, DIAMONDS]
 BLACK_SUITS = [SPADES, CLUBS]
 
 # TODO: try to get rid of the u'' bits
-SUITS = {
-        SPADES:   u'♠',
-        HEARTS:   u'♥',
-        DIAMONDS: u'♦',
-        CLUBS:    u'♣',
-        }
+SUITS = {SPADES:   u'♠ ',
+         HEARTS:   u'♥ ',
+         DIAMONDS: u'♦ ',
+         CLUBS:    u'♣ ', }
 
 KING = 13
 QUEEN = 12
 JACK = 11
 ACE = 1
 
-RANKS = {
-        KING: u'K',
-        QUEEN: u'Q',
-        JACK: u'J',
-        10: u'T',
-        9: u'9',
-        8: u'8',
-        7: u'7',
-        6: u'6',
-        5: u'5',
-        4: u'4',
-        3: u'3',
-        2: u'2',
-        ACE: u'A',
-        }
+RANKS = {KING: u'K',
+         QUEEN: u'Q',
+         JACK: u'J',
+         10: u'T',
+         9: u'9',
+         8: u'8',
+         7: u'7',
+         6: u'6',
+         5: u'5',
+         4: u'4',
+         3: u'3',
+         2: u'2',
+         ACE: u'A', }
 
-VALUES = {
-        KING: 10,
-        QUEEN: 10,
-        JACK: 10,
-        10: 10,
-        9: 9,
-        8: 8,
-        7: 7,
-        6: 6,
-        5: 5,
-        4: 4,
-        3: 3,
-        2: 2,
-        ACE: 1,
-        }
+VALUES = {KING: 10,
+          QUEEN: 10,
+          JACK: 10,
+          10: 10,
+          9: 9,
+          8: 8,
+          7: 7,
+          6: 6,
+          5: 5,
+          4: 4,
+          3: 3,
+          2: 2,
+          ACE: 1, }
 
 # ANSI escape sequences for "red" and "cancel color"
 RED_ESCAPE_OPEN = u'\x1b[31m'
 RED_ESCAPE_CLOSE = u'\x1b[0m'
 
 LOGFILE_NAME = os.getenv("USER") + ".cribbage.log"
-WELCOME_MESSAGE = ("Welcome to 'Cribbage Trainer'! "
+WELCOME_MESSAGE = (
+    "Welcome to 'Cribbage Trainer'! "
     "('?' for help, 'Ctrl-C' to quit)")
 
 HELP_CHAR = "?"
@@ -137,7 +132,7 @@ class Card():
         return "%s %s" % (RANKS[self.rank], self.suit)
 
     def __str__(self):
-        return colored_print()
+        return self.colored_print
 
     def __repr__(self):
         return self.plaintext_print
@@ -153,8 +148,8 @@ class Deck():
         else:
             full_deck = list(itertools.product(RANKS.keys(), SUITS.keys()))
             hand_as_strings = random.sample(full_deck, HAND_LENGTH)
-            hand_as_cards = [Card(card[0], card[1]) for card in
-                    hand_as_strings]
+            hand_as_cards = [Card(card[0], card[1])
+                             for card in hand_as_strings]
             return hand_as_cards
 
 
@@ -167,13 +162,11 @@ class Deal():
         self.fullhand = Deck.draw(HAND_LENGTH)
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
-        self.score_dict = {
-                          'pairs': 0,
-                          'fifteens': 0,
-                          'runs': 0,
-                          'flushes': 0,
-                          'nobs': 0,
-                          }
+        self.score_dict = {'pairs': 0,
+                           'fifteens': 0,
+                           'runs': 0,
+                           'flushes': 0,
+                           'nobs': 0, }
 
     @property
     def prompt(self):
@@ -227,8 +220,10 @@ class Deal():
         # method "show"
         pairs = [2 for pair in twos if pair[0].rank == pair[1].rank]
 
-        fifteens = [2 for combo in twos + threes + fours + fives if
-                sum([VALUES[card.rank] for card in combo]) == 15]
+        fifteens = [2
+                    for combo
+                    in twos + threes + fours + fives
+                    if sum([VALUES[card.rank] for card in combo]) == 15]
 
         runs = [len(combo) for combo in threes + fours + fives if
                 Deal.is_run(combo)]
@@ -240,8 +235,10 @@ class Deal():
         else:
             flushes = []
 
-        nobs = [1 for card in self.hand if card.rank == JACK and card.suit ==
-            self.starter.suit]
+        nobs = [1
+                for card
+                in self.hand
+                if card.rank == JACK and card.suit == self.starter.suit]
 
         assert sum(nobs) in [0, 1]
 
@@ -287,7 +284,7 @@ def main(args):
         current_hand = Deal()
 
         user_score = ''
-        while type(user_score) != types.IntType:
+        while not isinstance(user_score, types.IntType):
             sys.stdout.write(current_hand.prompt)
 
             try:
