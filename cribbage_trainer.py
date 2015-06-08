@@ -149,7 +149,7 @@ class CribbageHand(CardDeckMixin):
         }
 
     @property
-    def prompt(self):
+    def hand_as_prompt_display(self):
         """
         Print the cards in this deal using unicode card glyphs
         """
@@ -158,7 +158,7 @@ class CribbageHand(CardDeckMixin):
             ' '.join(color_cards) + ": "
 
     @property
-    def record(self):
+    def hand_as_record_display(self):
         """
         Print the cards in this deal using plaintext
         """
@@ -273,7 +273,7 @@ def main():
 
     current_hand = CribbageHand(Deck().deal(HAND_LENGTH))
     while True:
-        print current_hand.prompt,
+        print current_hand.hand_as_prompt_display,
         try:
             user_input = raw_input()
             assert user_input != HELP_MESSAGE
@@ -290,7 +290,7 @@ def main():
                 logfile.write(
                     "{time}\t{hand}\t{score}\n".format(
                         time=time.time(),
-                        hand=current_hand.record,
+                        hand=current_hand.hand_as_record_display,
                         score=user_score
                     )
                 )
