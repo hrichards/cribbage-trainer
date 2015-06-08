@@ -1,22 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-""" Presents the user with cribbage hands for scoring practice.
-
-Program Goals:
-
-    * have a quick, easy to program system for training on scoring, my weakest
-        cribbage skill
-    * collect data for each hand I see so that I can analyze such data later
-
-Pedagogical Goals:
-
-    * practice unicode
-    * practice using the nose testing framework
 """
+Presents the user with cribbage hands for scoring practice.
 
-
+The user is notified if their answer is correct.  Incorrect answers return the
+actual score of the hand, broken down by number of each score type (runs,
+pairs, etc.).  Hands, scores, and timestamps are logged for later analysis.
+"""
 import itertools
 import os
 import random
