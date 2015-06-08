@@ -15,6 +15,15 @@ import sys
 import time
 import types
 
+HELP_CHAR = "?"
+WELCOME_MESSAGE = (
+    "Welcome to 'Cribbage Trainer'! ('{}' for help, 'Ctrl-C' to quit)"
+    .format(HELP_CHAR))
+HELP_MESSAGE = """
+Deal random cribbage hand for the user to score.  At this point, the user can
+either press '?' for help, or quit with Ctrl-C and the answer won't be logged.
+"""
+
 HAND_LENGTH = 5
 
 SPADES = 'spades'
@@ -74,12 +83,7 @@ RED_ESCAPE_OPEN = u'\x1b[31m'
 RED_ESCAPE_CLOSE = u'\x1b[0m'
 
 LOGFILE_NAME = os.getenv("USER") + ".cribbage.log"
-WELCOME_MESSAGE = (
-    "Welcome to 'Cribbage Trainer'! "
-    "('?' for help, 'Ctrl-C' to quit)")
 
-HELP_CHAR = "?"
-HELP_MESSAGE = "Help message."
 CORRECT_MESSAGE = "Correct!"
 INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
 # Because user doesn't press return after ^C, must include one in this message
