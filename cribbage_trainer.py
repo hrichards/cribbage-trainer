@@ -267,8 +267,7 @@ HAND_LENGTH = 5
 
 CORRECT_MESSAGE = "Correct!"
 INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
-# Because user doesn't press return after ^C, must include '\n' in this message
-GOODBYE_MESSAGE = "\nGoodbye!"
+GOODBYE_MESSAGE = "Goodbye!"
 
 
 def main():
@@ -286,7 +285,7 @@ def main():
         except ValueError:
             print INVALID_INPUT_MESSAGE
         except (KeyboardInterrupt, EOFError):
-            print GOODBYE_MESSAGE
+            print '\n', GOODBYE_MESSAGE
             break
         else:
             with file(os.getenv("USER") + ".cribbage.log", 'a') as logfile:
