@@ -169,15 +169,12 @@ class CribbageHand(CardDeckMixin):
 
     @staticmethod
     def is_run(hand):
-        ranks = [card.rank for card in hand]
+        sorted_ranks = sorted(card.rank for card in hand)
 
-        ranks.sort()
+        normed_sorted_ranks = [rank - sorted_ranks[0] for rank in sorted_ranks]
 
-        for i in range(len(ranks) - 1):
-            if ranks[i + 1] - ranks[i] != 1:
-                return False
-
-        return True
+        return normed_sorted_ranks in (
+            [0, 1, 2], [0, 1, 2, 3], [0, 1, 2, 3, 4])
 
     # TODO: add testing to this method
     @property
