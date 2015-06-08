@@ -124,7 +124,7 @@ class Deck(CardDeckMixin):
         """
         indexes = random.sample(range(len(self.cards)), num_cards)
         dealt_cards = []
-        for index in indexes:
+        for index in sorted(indexes, reverse=True):
             dealt_cards.append(self.cards.pop(index))
         return dealt_cards
 
