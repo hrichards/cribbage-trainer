@@ -84,7 +84,7 @@ LOGFILE_NAME = os.getenv("USER") + ".cribbage.log"
 
 CORRECT_MESSAGE = "Correct!"
 INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
-# Because user doesn't press return after ^C, must include one in this message
+# Because user doesn't press return after ^C, must include '\n' in this message
 GOODBYE_MESSAGE = "\nGoodbye!"
 
 SHOW_TEMPLATE = """
