@@ -140,6 +140,7 @@ class CribbageHand(CardDeckMixin):
         self.fullhand = cards
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
+        # TODO: can you get rid of this?
         self.score_dict = {
             'pairs': 0,
             'fifteens': 0,
