@@ -12,7 +12,6 @@ import os
 import random
 import sys
 import time
-import types
 
 HELP_CHAR = "?"
 WELCOME_MESSAGE = (
@@ -273,49 +272,31 @@ def log_result(hand, score):
         logfile.write("%f\t%s\t%s\n" % (time.time(), hand, score))
 
 
-def main(args):
-    """
-    """
-    # TODO: write docstring
-
+def main():
     print WELCOME_MESSAGE
 
-    repeat_flag = True
-
-    while repeat_flag:
-        # deal random hand as a sort of CLI prompt
-        # prompt for the score of the hand from the user
-        # at this point, the user can either press '?' for help, or quit
-        # with Ctrl-C and the answer won't be logged.
-        current_hand = Deal()
-
-        user_score = ''
-        while not isinstance(user_score, types.IntType):
-            sys.stdout.write(current_hand.prompt)
-
-            try:
-                user_score = int(raw_input())
-            except ValueError:
-                if user_score == HELP_CHAR:
-                    print HELP_MESSAGE
-                else:
-                    print INVALID_INPUT_MESSAGE
-            except (KeyboardInterrupt, EOFError):
-                print GOODBYE_MESSAGE
-                repeat_flag = False
-                break
+    current_hand = Deal()
+    while True:
+        sys.stdout.write(current_hand.prompt)
+        try:
+            user_input = raw_input()
+            assert user_input != HELP_MESSAGE
+            user_score = int(user_input)
+        except AssertionError:
+            print HELP_MESSAGE
+        except ValueError:
+            print INVALID_INPUT_MESSAGE
+        except (KeyboardInterrupt, EOFError):
+            print GOODBYE_MESSAGE
+            break
+        else:
+            log_result(current_hand.record, user_score)
+            if current_hand.score == user_score:
+                print CORRECT_MESSAGE
             else:
-                log_result(current_hand.record, user_score)
-                if current_hand.score == user_score:
-                    # if the user's input is correct, show "correct" in some
-                    # kind of pleasing way
-                    print CORRECT_MESSAGE
-                else:
-                    # if the user's input is incorrect, display the correct
-                    # answer along with the breakdown of the score along each
-                    # type of scorable pattern
-                    print current_hand.show
+                print current_hand.show
+            current_hand = Deal()
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
