@@ -184,7 +184,8 @@ class Deal(CardDeckMixin):
     # TODO: add testing to this method
     @property
     def score(self):
-        """ Score the hand in this Deal
+        """
+        Score this hand for Cribbage
 
         The following patterns are searched for:
 
