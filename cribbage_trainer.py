@@ -153,7 +153,7 @@ class CribbageHand(CardDeckMixin):
         """
         Print the cards in this deal using unicode card glyphs
         """
-        return "{starter_display} | {} {} {} {}:".format(
+        return u"{starter_display} | {} {} {} {}:".format(
             *[card.colored_display for card in self.hand],
             starter_display=self.starter.colored_display)
 
@@ -162,7 +162,7 @@ class CribbageHand(CardDeckMixin):
         """
         Print the cards in this deal using plaintext
         """
-        return "{starter_display} | {} {} {} {}".format(
+        return u"{starter_display} | {} {} {} {}".format(
             *[card.plaintext_display for card in self.hand],
             starter_display=self.starter.plaintext_display)
 
