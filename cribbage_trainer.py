@@ -153,19 +153,18 @@ class CribbageHand(CardDeckMixin):
         """
         Print the cards in this deal using unicode card glyphs
         """
-        color_cards = [card.colored_display for card in self.hand]
-        return self.starter.colored_display + " | " + \
-            ' '.join(color_cards) + ": "
+        return "{starter_display} | {} {} {} {}:".format(
+            *[card.colored_display for card in self.hand],
+            starter_display=self.starter.colored_display)
 
     @property
     def hand_as_record_display(self):
         """
         Print the cards in this deal using plaintext
         """
-        plaintext_cards = [card.plaintext_display for card in self.hand]
-        return self.starter.plaintext_display + " | " + \
-            ' '.join(plaintext_cards) + ": "
-        return ', '.join(plaintext_cards)
+        return "{starter_display} | {} {} {} {}".format(
+            *[card.plaintext_display for card in self.hand],
+            starter_display=self.starter.plaintext_display)
 
     @staticmethod
     def is_run(hand):
