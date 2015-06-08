@@ -10,7 +10,6 @@ pairs, etc.).  Hands, scores, and timestamps are logged for later analysis.
 import itertools
 import os
 import random
-import string
 import sys
 import time
 import types
@@ -89,15 +88,15 @@ INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
 # Because user doesn't press return after ^C, must include one in this message
 GOODBYE_MESSAGE = "\nGoodbye!"
 
-SHOW_TEMPLATE = string.Template("""
-Actual score: $score
+SHOW_TEMPLATE = """
+Actual score: {score}
 
-Pairs       : $pairs
-Fifteens    : $fifteens
-Runs        : $runs
-Flushes     : $flushes
-Nobs        : $nobs
-""")
+Pairs       : {pairs}
+Fifteens    : {fifteens}
+Runs        : {runs}
+Flushes     : {flushes}
+Nobs        : {nobs}
+"""
 
 
 class Card():
@@ -264,7 +263,7 @@ class Deal():
     def show(self):
         """ Break down the score by type: runs, pairs, 15s, etc.
         """
-        return SHOW_TEMPLATE.substitute(self.score_dict)
+        return SHOW_TEMPLATE.format(**self.score_dict)
 
 
 def log_result(hand, score):
