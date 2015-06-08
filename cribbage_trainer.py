@@ -114,32 +114,32 @@ class Card(CardDeckMixin):
 
 
 class Deck(CardDeckMixin):
-    @classmethod
-    def draw(cls, num_cards):
+    def __init__(self):
+        self.cards = [
+            Card(rank, suit)
+            for rank, suit
+            in itertools.product(self.RANKS.keys(), self.SUITS.keys())]
+
+    def deal(self, num_cards):
         """
         Draw a hand of length <num_cards> and return as Card objects
         """
-        if num_cards < 0 or num_cards > 52:
-            raise ValueError
-        else:
-            full_deck = list(
-                itertools.product(cls.RANKS.keys(), cls.SUITS.keys()))
-            return [
-                Card(rank, suit)
-                for rank, suit
-                in random.sample(full_deck, num_cards)]
+        indexes = random.sample(range(len(self.cards)), num_cards)
+        dealt_cards = []
+        for index in indexes:
+            dealt_cards.append(self.cards.pop(index))
+        return dealt_cards
 
 
-class Deal(CardDeckMixin):
+class CribbageHand(CardDeckMixin):
     """
     A collection of five cards that the user is meant to score.
     """
-    def __init__(self):
+    def __init__(self, cards):
         """
         Get a random hand of five cards.
         """
-        # move HAND_LENGTH out of this class
-        self.fullhand = Deck.draw(HAND_LENGTH)
+        self.fullhand = cards
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
         self.score_dict = {
@@ -211,7 +211,7 @@ class Deal(CardDeckMixin):
                     if sum([self.VALUES[card.rank] for card in combo]) == 15]
 
         runs = [len(combo) for combo in threes + fours + fives if
-                Deal.is_run(combo)]
+                CribbageHand.is_run(combo)]
 
         if len(set([card.suit for card in self.fullhand])) == 1:
             flushes = [5]
@@ -274,7 +274,7 @@ GOODBYE_MESSAGE = "\nGoodbye!"
 def main():
     print WELCOME_MESSAGE
 
-    current_hand = Deal()
+    current_hand = CribbageHand(Deck().deal(HAND_LENGTH))
     while True:
         print current_hand.prompt,
         try:
@@ -301,7 +301,7 @@ def main():
                 print CORRECT_MESSAGE
             else:
                 print current_hand.show
-            current_hand = Deal()
+            current_hand = CribbageHand(Deck().deal(HAND_LENGTH))
 
 
 if __name__ == "__main__":
