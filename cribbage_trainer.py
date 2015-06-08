@@ -10,7 +10,6 @@ pairs, etc.).  Hands, scores, and timestamps are logged for later analysis.
 import itertools
 import os
 import random
-import sys
 import time
 
 
@@ -276,7 +275,7 @@ def main():
 
     current_hand = Deal()
     while True:
-        sys.stdout.write(current_hand.prompt)
+        print current_hand.prompt,
         try:
             user_input = raw_input()
             assert user_input != HELP_MESSAGE
