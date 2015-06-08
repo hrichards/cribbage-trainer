@@ -181,24 +181,25 @@ class CribbageHand(CardDeckMixin):
         Runs - consecutive cards of any suit - 3 for 3, 4 for 4, etc.
         Flush - 4 for 4 in the hand, 5 for 5
         Nobs - J of same suit as starter
-        """
 
+        The idea of the implementation is to consider all combinations of cards
+        by twos, threes, fours, and fives, and exhaustively search for and
+        tally matching combinations.
+        """
         twos = list(itertools.combinations(self.fullhand, 2))
         threes = list(itertools.combinations(self.fullhand, 3))
         fours = list(itertools.combinations(self.fullhand, 4))
         fives = list(itertools.combinations(self.fullhand, 5))
 
-        # TODO: you can change this area to keep track of pairs, runs, etc for
-        # method "show"
-        pairs = [2 for pair in twos if pair[0].rank == pair[1].rank]
+        pairs = [2 for card1, card2 in twos if card1.rank == card2.rank]
 
-        fifteens = [2
-                    for combo
-                    in twos + threes + fours + fives
-                    if sum([self.VALUES[card.rank] for card in combo]) == 15]
+        fifteens = [
+            2 for combo in twos + threes + fours + fives
+            if sum([self.VALUES[card.rank] for card in combo]) == 15]
 
-        runs = [len(combo) for combo in threes + fours + fives if
-                CribbageHand.is_run(combo)]
+        runs = [
+            len(combo) for combo in threes + fours + fives
+            if self.is_run(combo)]
 
         if len(set([card.suit for card in self.fullhand])) == 1:
             flushes = [5]
@@ -207,10 +208,9 @@ class CribbageHand(CardDeckMixin):
         else:
             flushes = []
 
-        nobs = [1
-                for card
-                in self.hand
-                if card.rank == self.JACK and card.suit == self.starter.suit]
+        nobs = [
+            1 for card in self.hand
+            if card.rank == self.JACK and card.suit == self.starter.suit]
 
         return {
             'score': sum(pairs + fifteens + runs + flushes + nobs),
