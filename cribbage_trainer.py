@@ -13,101 +13,75 @@ import random
 import sys
 import time
 
-HELP_CHAR = "?"
-WELCOME_MESSAGE = (
-    "Welcome to 'Cribbage Trainer'! ('{}' for help, 'Ctrl-C' to quit)"
-    .format(HELP_CHAR))
-HELP_MESSAGE = """
-Deal random cribbage hand for the user to score.  At this point, the user can
-either press '?' for help, or quit with Ctrl-C and the answer won't be logged.
-"""
 
-HAND_LENGTH = 5
+class CardDeckMixin():
+    KING = 13
+    QUEEN = 12
+    JACK = 11
+    ACE = 1
 
-SPADES = 'spades'
-HEARTS = 'hearts'
-DIAMONDS = 'diamonds'
-CLUBS = 'clubs'
+    RANKS = {
+        KING: u'K',
+        QUEEN: u'Q',
+        JACK: u'J',
+        10: u'T',
+        9: u'9',
+        8: u'8',
+        7: u'7',
+        6: u'6',
+        5: u'5',
+        4: u'4',
+        3: u'3',
+        2: u'2',
+        ACE: u'A',
+    }
 
-RED_SUITS = [HEARTS, DIAMONDS]
-BLACK_SUITS = [SPADES, CLUBS]
+    VALUES = {
+        KING: 10,
+        QUEEN: 10,
+        JACK: 10,
+        10: 10,
+        9: 9,
+        8: 8,
+        7: 7,
+        6: 6,
+        5: 5,
+        4: 4,
+        3: 3,
+        2: 2,
+        ACE: 1,
+    }
 
-SUITS = {
-    SPADES:   u'♠',
-    HEARTS:   u'♥',
-    DIAMONDS: u'♦',
-    CLUBS:    u'♣',
-}
+    SPADES = 'spades'
+    HEARTS = 'hearts'
+    DIAMONDS = 'diamonds'
+    CLUBS = 'clubs'
 
-KING = 13
-QUEEN = 12
-JACK = 11
-ACE = 1
+    RED_SUITS = [HEARTS, DIAMONDS]
+    BLACK_SUITS = [SPADES, CLUBS]
 
-RANKS = {
-    KING: u'K',
-    QUEEN: u'Q',
-    JACK: u'J',
-    10: u'T',
-    9: u'9',
-    8: u'8',
-    7: u'7',
-    6: u'6',
-    5: u'5',
-    4: u'4',
-    3: u'3',
-    2: u'2',
-    ACE: u'A',
-}
-
-VALUES = {
-    KING: 10,
-    QUEEN: 10,
-    JACK: 10,
-    10: 10,
-    9: 9,
-    8: 8,
-    7: 7,
-    6: 6,
-    5: 5,
-    4: 4,
-    3: 3,
-    2: 2,
-    ACE: 1,
-}
-
-# ANSI escape sequences for manipulating terminal color
-RED_ESCAPE_OPEN = u'\x1b[31m'
-RED_ESCAPE_CLOSE = u'\x1b[0m'
-
-LOGFILE_NAME = os.getenv("USER") + ".cribbage.log"
-
-CORRECT_MESSAGE = "Correct!"
-INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
-# Because user doesn't press return after ^C, must include '\n' in this message
-GOODBYE_MESSAGE = "\nGoodbye!"
-
-SHOW_TEMPLATE = """
-Actual score: {score}
-
-Pairs       : {pairs}
-Fifteens    : {fifteens}
-Runs        : {runs}
-Flushes     : {flushes}
-Nobs        : {nobs}
-"""
+    SUITS = {
+        SPADES:   u'♠',
+        HEARTS:   u'♥',
+        DIAMONDS: u'♦',
+        CLUBS:    u'♣',
+    }
 
 
-class Card():
+class Card(CardDeckMixin):
     """
     One of the 52 standard playing cards.
 
-    Cards know their suit, rank, and how to be displayed.
+    Cards know their rank, suit, and how to be displayed.
     """
+    # ANSI escape sequences for manipulating terminal color
+    RED_ESCAPE_OPEN = u'\x1b[31m'
+    RED_ESCAPE_CLOSE = u'\x1b[0m'
+
     def __init__(self, rank, suit):
         """
         """
-        if rank not in RANKS.keys() or suit not in SUITS.keys():
+        if rank not in self.RANKS.keys() or suit not in self.SUITS.keys():
             raise ValueError("No such card.")
 
         self.rank = rank
@@ -118,18 +92,20 @@ class Card():
         """
         Print a color version of the hand, suitable for CLI
         """
-        if self.suit in RED_SUITS:
-            escaped_template = RED_ESCAPE_OPEN + "%s%s" + RED_ESCAPE_CLOSE
-            return escaped_template % (RANKS[self.rank], SUITS[self.suit])
+        if self.suit in self.RED_SUITS:
+            escaped_template = (
+                self.RED_ESCAPE_OPEN + "%s%s" + self.RED_ESCAPE_CLOSE)
+            return escaped_template % (
+                self.RANKS[self.rank], self.SUITS[self.suit])
         else:
-            return "%s%s" % (RANKS[self.rank], SUITS[self.suit])
+            return "%s%s" % (self.RANKS[self.rank], self.SUITS[self.suit])
 
     @property
     def plaintext_print(self):
         """
         Print a plaintext version of the hand, suitable for logging
         """
-        return "%s %s" % (RANKS[self.rank], self.suit)
+        return "%s %s" % (self.RANKS[self.rank], self.suit)
 
     def __str__(self):
         return self.colored_print
@@ -138,23 +114,24 @@ class Card():
         return self.plaintext_print
 
 
-class Deck():
-    @staticmethod
-    def draw(num_cards):
+class Deck(CardDeckMixin):
+    @classmethod
+    def draw(cls, num_cards):
         """
         Draw a hand of length <num_cards> and return as Card objects
         """
         if num_cards < 0 or num_cards > 52:
             raise ValueError
         else:
-            full_deck = list(itertools.product(RANKS.keys(), SUITS.keys()))
+            full_deck = list(
+                itertools.product(cls.RANKS.keys(), cls.SUITS.keys()))
             return [
                 Card(rank, suit)
                 for rank, suit
                 in random.sample(full_deck, num_cards)]
 
 
-class Deal():
+class Deal(CardDeckMixin):
     """
     A collection of five cards that the user is meant to score.
     """
@@ -162,6 +139,7 @@ class Deal():
         """
         Get a random hand of five cards.
         """
+        # move HAND_LENGTH out of this class
         self.fullhand = Deck.draw(HAND_LENGTH)
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
@@ -175,7 +153,8 @@ class Deal():
 
     @property
     def prompt(self):
-        """ Print the cards in this deal using unicode card glyphs
+        """
+        Print the cards in this deal using unicode card glyphs
         """
         color_cards = [card.colored_print for card in self.hand]
         return self.starter.colored_print + " | " + \
@@ -183,7 +162,8 @@ class Deal():
 
     @property
     def record(self):
-        """ Print the cards in this deal using plaintext
+        """
+        Print the cards in this deal using plaintext
         """
         plaintext_cards = [card.plaintext_print for card in self.hand]
         return self.starter.plaintext_print + " | " + \
@@ -228,7 +208,7 @@ class Deal():
         fifteens = [2
                     for combo
                     in twos + threes + fours + fives
-                    if sum([VALUES[card.rank] for card in combo]) == 15]
+                    if sum([self.VALUES[card.rank] for card in combo]) == 15]
 
         runs = [len(combo) for combo in threes + fours + fives if
                 Deal.is_run(combo)]
@@ -243,7 +223,7 @@ class Deal():
         nobs = [1
                 for card
                 in self.hand
-                if card.rank == JACK and card.suit == self.starter.suit]
+                if card.rank == self.JACK and card.suit == self.starter.suit]
 
         assert sum(nobs) in [0, 1]
 
@@ -260,16 +240,35 @@ class Deal():
 
     @property
     def show(self):
-        """ Break down the score by type: runs, pairs, 15s, etc.
         """
-        return SHOW_TEMPLATE.format(**self.score_dict)
+        Break down the score by type: runs, pairs, 15s, etc.
+        """
+        return """
+        Actual score : {score}
+
+        Pairs        : {pairs}
+        Fifteens     : {fifteens}
+        Runs         : {runs}
+        Flushes      : {flushes}
+        Nobs         : {nobs}
+        """.format(**self.score_dict)
 
 
-def log_result(hand, score):
-    """ Log the time, the hand, and user answer in user-specific logfile
-    """
-    with file(LOGFILE_NAME, 'a') as logfile:
-        logfile.write("%f\t%s\t%s\n" % (time.time(), hand, score))
+HELP_CHAR = "?"
+WELCOME_MESSAGE = (
+    "Welcome to 'Cribbage Trainer'! ('{}' for help, 'Ctrl-C' to quit)"
+    .format(HELP_CHAR))
+HELP_MESSAGE = """
+Deal random cribbage hand for the user to score.  At this point, the user can
+either press '?' for help, or quit with Ctrl-C and the answer won't be logged.
+"""
+
+HAND_LENGTH = 5
+
+CORRECT_MESSAGE = "Correct!"
+INVALID_INPUT_MESSAGE = "Invalid input.  Score this hand again."
+# Because user doesn't press return after ^C, must include '\n' in this message
+GOODBYE_MESSAGE = "\nGoodbye!"
 
 
 def main():
@@ -290,7 +289,14 @@ def main():
             print GOODBYE_MESSAGE
             break
         else:
-            log_result(current_hand.record, user_score)
+            with file(os.getenv("USER") + ".cribbage.log", 'a') as logfile:
+                logfile.write(
+                    "{time}\t{hand}\t{score}\n".format(
+                        time=time.time(),
+                        hand=current_hand.record,
+                        score=user_score
+                    )
+                )
             if current_hand.score == user_score:
                 print CORRECT_MESSAGE
             else:
