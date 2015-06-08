@@ -98,7 +98,7 @@ class Card(CardDeckMixin):
             return "%s%s" % (self.RANKS[self.rank], self.SUITS[self.suit])
 
     @property
-    def plaintext_print(self):
+    def plaintext_display(self):
         """
         Print a plaintext version of the hand, suitable for logging
         """
@@ -108,7 +108,7 @@ class Card(CardDeckMixin):
         return self.colored_display
 
     def __repr__(self):
-        return self.plaintext_print
+        return self.plaintext_display
 
 
 class Deck(CardDeckMixin):
@@ -162,8 +162,8 @@ class CribbageHand(CardDeckMixin):
         """
         Print the cards in this deal using plaintext
         """
-        plaintext_cards = [card.plaintext_print for card in self.hand]
-        return self.starter.plaintext_print + " | " + \
+        plaintext_cards = [card.plaintext_display for card in self.hand]
+        return self.starter.plaintext_display + " | " + \
             ' '.join(plaintext_cards) + ": "
         return ', '.join(plaintext_cards)
 
