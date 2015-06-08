@@ -35,46 +35,51 @@ CLUBS = 'clubs'
 RED_SUITS = [HEARTS, DIAMONDS]
 BLACK_SUITS = [SPADES, CLUBS]
 
-# TODO: try to get rid of the u'' bits
-SUITS = {SPADES:   u'♠ ',
-         HEARTS:   u'♥ ',
-         DIAMONDS: u'♦ ',
-         CLUBS:    u'♣ ', }
+SUITS = {
+    SPADES:   u'♠',
+    HEARTS:   u'♥',
+    DIAMONDS: u'♦',
+    CLUBS:    u'♣',
+}
 
 KING = 13
 QUEEN = 12
 JACK = 11
 ACE = 1
 
-RANKS = {KING: u'K',
-         QUEEN: u'Q',
-         JACK: u'J',
-         10: u'T',
-         9: u'9',
-         8: u'8',
-         7: u'7',
-         6: u'6',
-         5: u'5',
-         4: u'4',
-         3: u'3',
-         2: u'2',
-         ACE: u'A', }
+RANKS = {
+    KING: u'K',
+    QUEEN: u'Q',
+    JACK: u'J',
+    10: u'T',
+    9: u'9',
+    8: u'8',
+    7: u'7',
+    6: u'6',
+    5: u'5',
+    4: u'4',
+    3: u'3',
+    2: u'2',
+    ACE: u'A',
+}
 
-VALUES = {KING: 10,
-          QUEEN: 10,
-          JACK: 10,
-          10: 10,
-          9: 9,
-          8: 8,
-          7: 7,
-          6: 6,
-          5: 5,
-          4: 4,
-          3: 3,
-          2: 2,
-          ACE: 1, }
+VALUES = {
+    KING: 10,
+    QUEEN: 10,
+    JACK: 10,
+    10: 10,
+    9: 9,
+    8: 8,
+    7: 7,
+    6: 6,
+    5: 5,
+    4: 4,
+    3: 3,
+    2: 2,
+    ACE: 1,
+}
 
-# ANSI escape sequences for "red" and "cancel color"
+# ANSI escape sequences for manipulating terminal color
 RED_ESCAPE_OPEN = u'\x1b[31m'
 RED_ESCAPE_CLOSE = u'\x1b[0m'
 
@@ -102,7 +107,8 @@ Nobs        : $nobs
 
 
 class Card():
-    """ One of the 52 standard playing cards.
+    """
+    One of the 52 standard playing cards.
 
     Cards know their suit, rank, and how to be displayed.
     """
@@ -117,7 +123,8 @@ class Card():
 
     @property
     def colored_print(self):
-        """ Print a color version of the hand, suitable for CLI
+        """
+        Print a color version of the hand, suitable for CLI
         """
         if self.suit in RED_SUITS:
             escaped_template = RED_ESCAPE_OPEN + "%s%s" + RED_ESCAPE_CLOSE
@@ -127,7 +134,8 @@ class Card():
 
     @property
     def plaintext_print(self):
-        """ Print a plaintext version of the hand, suitable for logging
+        """
+        Print a plaintext version of the hand, suitable for logging
         """
         return "%s %s" % (RANKS[self.rank], self.suit)
 
@@ -142,31 +150,36 @@ class Deck():
     @staticmethod
     def draw(num_cards):
         """
+        Draw a hand of length <num_cards> and return as Card objects
         """
         if num_cards < 0 or num_cards > 52:
             raise ValueError
         else:
             full_deck = list(itertools.product(RANKS.keys(), SUITS.keys()))
-            hand_as_strings = random.sample(full_deck, HAND_LENGTH)
-            hand_as_cards = [Card(card[0], card[1])
-                             for card in hand_as_strings]
-            return hand_as_cards
+            return [
+                Card(rank, suit)
+                for rank, suit
+                in random.sample(full_deck, num_cards)]
 
 
 class Deal():
-    """ A collection of five cards that the user is meant to score.
+    """
+    A collection of five cards that the user is meant to score.
     """
     def __init__(self):
-        """ Get a random hand of five cards.
+        """
+        Get a random hand of five cards.
         """
         self.fullhand = Deck.draw(HAND_LENGTH)
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
-        self.score_dict = {'pairs': 0,
-                           'fifteens': 0,
-                           'runs': 0,
-                           'flushes': 0,
-                           'nobs': 0, }
+        self.score_dict = {
+            'pairs': 0,
+            'fifteens': 0,
+            'runs': 0,
+            'flushes': 0,
+            'nobs': 0,
+        }
 
     @property
     def prompt(self):
