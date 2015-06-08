@@ -168,7 +168,6 @@ class CribbageHand(CardDeckMixin):
         return normed_sorted_ranks in (
             [0, 1, 2], [0, 1, 2, 3], [0, 1, 2, 3, 4])
 
-    # TODO: add testing to this method
     @property
     def score(self):
         """
