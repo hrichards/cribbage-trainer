@@ -137,6 +137,7 @@ class CribbageHand(CardDeckMixin):
         """
         Get a random hand of five cards.
         """
+        assert len(cards) == 5
         self.fullhand = cards
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
