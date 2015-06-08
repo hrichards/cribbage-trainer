@@ -239,7 +239,7 @@ class CribbageHand(CardDeckMixin):
         return score
 
     @property
-    def show(self):
+    def score_breakdown(self):
         """
         Break down the score by type: runs, pairs, 15s, etc.
         """
@@ -300,7 +300,7 @@ def main():
             if current_hand.score == user_score:
                 print CORRECT_MESSAGE
             else:
-                print current_hand.show
+                print current_hand.score_breakdown
             current_hand = CribbageHand(Deck().deal(HAND_LENGTH))
 
 
