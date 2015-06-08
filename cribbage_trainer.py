@@ -140,14 +140,6 @@ class CribbageHand(CardDeckMixin):
         self.fullhand = cards
         self.hand = self.fullhand[1:]
         self.starter = self.fullhand[0]
-        # TODO: can you get rid of this?
-        self.score_dict = {
-            'pairs': 0,
-            'fifteens': 0,
-            'runs': 0,
-            'flushes': 0,
-            'nobs': 0,
-        }
 
     @property
     def hand_as_prompt_display(self):
@@ -220,18 +212,14 @@ class CribbageHand(CardDeckMixin):
                 in self.hand
                 if card.rank == self.JACK and card.suit == self.starter.suit]
 
-        assert sum(nobs) in [0, 1]
-
-        score = sum(pairs + fifteens + runs + flushes + nobs)
-
-        self.score_dict['score'] = score
-        self.score_dict['pairs'] = sum(pairs)
-        self.score_dict['fifteens'] = sum(fifteens)
-        self.score_dict['runs'] = sum(runs)
-        self.score_dict['flushes'] = sum(flushes)
-        self.score_dict['nobs'] = sum(nobs)
-
-        return score
+        return {
+            'score': sum(pairs + fifteens + runs + flushes + nobs),
+            'pairs': sum(pairs),
+            'fifteens': sum(fifteens),
+            'runs': sum(runs),
+            'flushes': sum(flushes),
+            'nobs': sum(nobs),
+        }
 
     @property
     def score_breakdown(self):
@@ -246,7 +234,7 @@ class CribbageHand(CardDeckMixin):
         Runs         : {runs}
         Flushes      : {flushes}
         Nobs         : {nobs}
-        """.format(**self.score_dict)
+        """.format(**self.score)
 
 
 HELP_CHAR = "?"
@@ -291,7 +279,7 @@ def main():
                         score=user_score
                     )
                 )
-            if current_hand.score == user_score:
+            if current_hand.score['score'] == user_score:
                 print CORRECT_MESSAGE
             else:
                 print current_hand.score_breakdown
