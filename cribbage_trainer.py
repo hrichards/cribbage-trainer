@@ -78,8 +78,6 @@ class Card(CardDeckMixin):
     RED_ESCAPE_CLOSE = u'\x1b[0m'
 
     def __init__(self, rank, suit):
-        """
-        """
         if rank not in self.RANKS.keys() or suit not in self.SUITS.keys():
             raise ValueError("No such card.")
 
@@ -87,7 +85,7 @@ class Card(CardDeckMixin):
         self.suit = suit
 
     @property
-    def colored_print(self):
+    def colored_display(self):
         """
         Print a color version of the hand, suitable for CLI
         """
@@ -107,7 +105,7 @@ class Card(CardDeckMixin):
         return "%s %s" % (self.RANKS[self.rank], self.suit)
 
     def __str__(self):
-        return self.colored_print
+        return self.colored_display
 
     def __repr__(self):
         return self.plaintext_print
@@ -155,8 +153,8 @@ class CribbageHand(CardDeckMixin):
         """
         Print the cards in this deal using unicode card glyphs
         """
-        color_cards = [card.colored_print for card in self.hand]
-        return self.starter.colored_print + " | " + \
+        color_cards = [card.colored_display for card in self.hand]
+        return self.starter.colored_display + " | " + \
             ' '.join(color_cards) + ": "
 
     @property
