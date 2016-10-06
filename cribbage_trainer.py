@@ -7,47 +7,59 @@ The user is notified if their answer is correct.  Incorrect answers return the
 actual score of the hand, broken down by number of each score type (runs,
 pairs, etc.).  Hands, scores, and timestamps are logged for later analysis.
 """
+from __future__ import unicode_literals
+import copy
 import itertools
 import os
 import random
 import time
+from operator import attrgetter
 
 
 class CardDeckMixin():
     KING = 13
     QUEEN = 12
     JACK = 11
+    TEN = 10
+    NINE = 9
+    EIGHT = 8
+    SEVEN = 7
+    SIX = 6
+    FIVE = 5
+    FOUR = 4
+    THREE = 3
+    TWO = 2
     ACE = 1
 
     RANKS = {
-        KING: u'K',
-        QUEEN: u'Q',
-        JACK: u'J',
-        10: u'T',
-        9: u'9',
-        8: u'8',
-        7: u'7',
-        6: u'6',
-        5: u'5',
-        4: u'4',
-        3: u'3',
-        2: u'2',
-        ACE: u'A',
+        KING: 'K',
+        QUEEN: 'Q',
+        JACK: 'J',
+        TEN: 'T',
+        NINE: '9',
+        EIGHT: '8',
+        SEVEN: '7',
+        SIX: '6',
+        FIVE: '5',
+        FOUR: '4',
+        THREE: '3',
+        TWO: '2',
+        ACE: 'A',
     }
 
     VALUES = {
         KING: 10,
         QUEEN: 10,
         JACK: 10,
-        10: 10,
-        9: 9,
-        8: 8,
-        7: 7,
-        6: 6,
-        5: 5,
-        4: 4,
-        3: 3,
-        2: 2,
+        TEN: 10,
+        NINE: 9,
+        EIGHT: 8,
+        SEVEN: 7,
+        SIX: 6,
+        FIVE: 5,
+        FOUR: 4,
+        THREE: 3,
+        TWO: 2,
         ACE: 1,
     }
 
