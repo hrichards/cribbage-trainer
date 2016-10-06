@@ -72,11 +72,262 @@ class TestCribbageHand(unittest.TestCase):
     def test_is_run(self):
         pass
 
-    def test_score(self):
-        pass
-
     def test_score_breakdown(self):
         pass
+
+
+class TestCribbageHand(unittest.TestCase, CardDeckMixin):
+    def test_pair(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.ACE, self.HEARTS),
+            Card(self.TWO, self.SPADES),
+            Card(self.FOUR, self.SPADES),
+            Card(self.SIX, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 2,
+                'pairs': 2,
+                'fifteens': 0,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_three_of_a_kind(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.ACE, self.HEARTS),
+            Card(self.ACE, self.DIAMONDS),
+            Card(self.FOUR, self.SPADES),
+            Card(self.SIX, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 6,
+                'pairs': 6,
+                'fifteens': 0,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_four_of_a_kind(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.ACE, self.HEARTS),
+            Card(self.ACE, self.DIAMONDS),
+            Card(self.ACE, self.CLUBS),
+            Card(self.SIX, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 12,
+                'pairs': 12,
+                'fifteens': 0,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_fifteens(self):
+        hand = CribbageHand([
+            Card(self.FIVE, self.SPADES),
+            Card(self.TEN, self.HEARTS),
+            Card(self.KING, self.DIAMONDS),
+            Card(self.SIX, self.CLUBS),
+            Card(self.NINE, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 6,
+                'pairs': 0,
+                'fifteens': 6,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_runs(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.TWO, self.HEARTS),
+            Card(self.THREE, self.DIAMONDS),
+            Card(self.SIX, self.CLUBS),
+            Card(self.SEVEN, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 5,
+                'pairs': 0,
+                'fifteens': 2,
+                'runs': 3,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.TWO, self.HEARTS),
+            Card(self.THREE, self.DIAMONDS),
+            Card(self.FOUR, self.CLUBS),
+            Card(self.SEVEN, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 6,
+                'pairs': 0,
+                'fifteens': 2,
+                'runs': 4,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.TWO, self.HEARTS),
+            Card(self.THREE, self.DIAMONDS),
+            Card(self.FOUR, self.CLUBS),
+            Card(self.FIVE, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 7,
+                'pairs': 0,
+                'fifteens': 2,
+                'runs': 5,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.ACE, self.HEARTS),
+            Card(self.TWO, self.HEARTS),
+            Card(self.THREE, self.DIAMONDS),
+            Card(self.FOUR, self.CLUBS),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 10,
+                'pairs': 2,
+                'fifteens': 0,
+                'runs': 8,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_four_flush(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.HEARTS),
+            Card(self.THREE, self.SPADES),
+            Card(self.FIVE, self.SPADES),
+            Card(self.SEVEN, self.SPADES),
+            Card(self.NINE, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 8,
+                'pairs': 0,
+                'fifteens': 4,
+                'runs': 0,
+                'flushes': 4,
+                'nobs': 0,
+            }
+        )
+        hand = CribbageHand([
+            Card(self.THREE, self.SPADES),
+            Card(self.FIVE, self.SPADES),
+            Card(self.SEVEN, self.SPADES),
+            Card(self.NINE, self.SPADES),
+            Card(self.ACE, self.HEARTS),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 4,
+                'pairs': 0,
+                'fifteens': 4,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 0,
+            }
+        )
+
+    def test_five_flush(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.THREE, self.SPADES),
+            Card(self.FIVE, self.SPADES),
+            Card(self.SEVEN, self.SPADES),
+            Card(self.NINE, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 9,
+                'pairs': 0,
+                'fifteens': 4,
+                'runs': 0,
+                'flushes': 5,
+                'nobs': 0,
+            }
+        )
+
+    def test_nobs(self):
+        hand = CribbageHand([
+            Card(self.ACE, self.SPADES),
+            Card(self.THREE, self.HEARTS),
+            Card(self.FIVE, self.DIAMONDS),
+            Card(self.SEVEN, self.CLUBS),
+            Card(self.JACK, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 5,
+                'pairs': 0,
+                'fifteens': 4,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 1,
+            }
+        )
+
+    def test_highest_hand(self):
+        hand = CribbageHand([
+            Card(self.FIVE, self.SPADES),
+            Card(self.FIVE, self.HEARTS),
+            Card(self.FIVE, self.DIAMONDS),
+            Card(self.FIVE, self.CLUBS),
+            Card(self.JACK, self.SPADES),
+        ])
+        self.assertEqual(
+            hand.score,
+            {
+                'score': 29,
+                'pairs': 12,
+                'fifteens': 16,
+                'runs': 0,
+                'flushes': 0,
+                'nobs': 1,
+            }
+        )
 
 
 class TestMainMethod(unittest.TestCase):
