@@ -90,7 +90,7 @@ class Card(CardDeckMixin):
     RED_ESCAPE_CLOSE = u'\x1b[0m'
 
     def __init__(self, rank, suit):
-        if rank not in self.RANKS.keys() or suit not in self.SUITS.keys():
+        if rank not in self.RANKS or suit not in self.SUITS:
             raise ValueError("No such card.")
 
         self.rank = rank
