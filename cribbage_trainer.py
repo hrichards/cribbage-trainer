@@ -209,9 +209,24 @@ class CribbageHand(CardDeckMixin):
             2 for combo in twos + threes + fours + fives
             if sum([self.VALUES[card.rank] for card in combo]) == 15]
 
-        runs = [
-            len(combo) for combo in threes + fours + fives
-            if self.is_run(combo)]
+        run_combos = []
+        non_run_cards = copy.copy(self.fullhand)
+        # Start with the longest possible runs first...
+        for length in [5, 4, 3]:
+            this_lengths_combos = []
+            for combo in list(itertools.combinations(non_run_cards, length)):
+                if self.is_run(combo):
+                    this_lengths_combos.append(combo)
+            # ... and remove the elements in them so that their subarrays
+            # aren't also counted as runs.
+            for element in set(itertools.chain(*this_lengths_combos)):
+                non_run_cards.remove(element)
+            # We use `this_lengths_combos` in each loop so that we don't try to
+            # remove elements we've already removed by re-iterating over found
+            # runs from previous iterations.
+            run_combos.extend(this_lengths_combos)
+
+        runs = [len(combo) for combo in run_combos]
 
         if len(set([card.suit for card in self.fullhand])) == 1:
             flushes = [5]
